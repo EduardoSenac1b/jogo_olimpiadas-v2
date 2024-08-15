@@ -1,0 +1,172 @@
+let vida = 50;
+let energia = 100;
+let inventario = ["amizade", "amor", "amor", "amor", "amor", "amor"];
+let dia = 1;
+let habilidade = 120;
+let descansouHoje = false;
+let game_state = 0; // Controle de fases do jogo
+
+function verStatus() {
+    alert(`
+    Vida: ${vida}
+    Energia: ${energia}
+    Descançou hoje: ${descansouHoje}
+    Inventário: ${inventario.join(", ")}
+    Dia: ${dia}
+    Habilidade: ${habilidade}
+    Fase: ${game_state}
+    `);
+}
+
+function quartoOpcao() {
+    let quarto = prompt("Você está em seu quarto, o que deseja fazer?\n[1]-Dormir\n[2]-Descansar\n[3]-Voltar\n[4]-Ver inventário");
+
+    switch (quarto) {
+        case "1":
+            dormir();
+            break;
+        case "2":
+            descansar();
+            break;
+        case "3":
+            alert("Voltando para a sala."); // Alterar o texto conforme necessário
+            break;
+        case "4":
+            verStatus();
+            break;
+        default:
+            alert("Opção inválida."); // Alterar o texto conforme necessário
+            break;
+    }
+}
+
+function dormir() {
+    energia = 100;
+    dia += 1;
+    descansouHoje = false;
+    alert("Você dormiu e restaurou sua energia."); // Alterar o texto conforme necessário
+}
+
+function descansar() {
+    if (!descansouHoje) {
+        if (energia < 100) {
+            energia = Math.min(energia + 30, 100);
+            alert("Você descansou e recuperou energia."); // Alterar o texto conforme necessário
+        } else {
+            alert("Você já está com a energia cheia e não precisa descansar."); // Alterar o texto conforme necessário
+        }
+        descansouHoje = true;
+    } else {
+        alert("Você já descansou hoje. Espere até o dia seguinte."); // Alterar o texto conforme necessário
+    }
+}
+
+function lutarNoClube() {
+    let luta = prompt("Você chegou ao clube da luta. Deseja lutar?\n[1]-Sim\n[2]-Não\n[3]-Enfrentar oponente");
+
+    if (energia <= 0) {
+        alert("Você não tem energia para lutar. Vá descansar."); // Alterar o texto conforme necessário
+        return;
+    }
+
+    switch (luta) {
+        case "1":
+            if (energia <= 39) {
+                alert("Energia muito baixa para treinar, vá descansar ou dormir para treinar."); // Alterar o texto conforme necessário
+            } else {
+                habilidade += 10;
+                energia -= 40;
+                alert("Você lutou e ganhou experiência, mas perdeu energia."); // Alterar o texto conforme necessário
+            }
+            break;
+        case "2":
+            enfrentarOponente();
+            break;
+        case "3":
+            alert("Você não quis lutar, então você vai para a sala."); // Alterar o texto conforme necessário
+            break;
+        default:
+            alert("Opção inválida."); // Alterar o texto conforme necessário
+            break;
+    }
+}
+
+function enfrentarOponente() {
+    if (habilidade >= 120) {
+        alert("Você lutou contra seu oponente, venceu graças ao seu treinamento, mas um terremoto atingiu a região. Agora, você terá que se mudar para a Itália, enfrentando inimigos mais fortes, mas com um buff em sua progressão."); // Alterar o texto conforme necessário
+        game_state = 1; // Mudar para a próxima fase
+        faseItalia(); // Iniciar a fase da Itália imediatamente
+    } else {
+        alert("Você lutou e perdeu a oportunidade de evoluir seu ranque."); // Alterar o texto conforme necessário
+    }
+}
+
+function reiniciarJogo() {
+    alert("Saindo do jogo."); // Alterar o texto conforme necessário
+    verStatus();
+    continuar = false;
+}
+
+function faseItalia() {
+    while (game_state == 1) {
+        let opcao = prompt("Bem-vindo à Itália! O que deseja fazer?\n[1]-Treinar\n[2]-Explorar\n[3]-Ver inventário\n[4]-Voltar para casa");
+
+        switch (opcao) {
+            case "1":
+                alert("Você treinou e melhorou suas habilidades."); // Alterar o texto conforme necessário
+                habilidade += 20;
+                break;
+            case "2":
+                alert("Você explorou a Itália e encontrou novos desafios."); // Alterar o texto conforme necessário
+                break;
+            case "3":
+                verStatus();
+                break;
+            case "4":
+                alert("Voltando para casa."); // Alterar o texto conforme necessário
+                game_state = 0; // Retorna à fase inicial
+                break;
+            default:
+                alert("Opção inválida."); // Alterar o texto conforme necessário
+                break;
+        }
+    }
+}
+
+let continuar = true;
+
+while (continuar) {
+    if (game_state == 0) { // Fase inicial do jogo
+        let inicio = prompt("Você está em casa, o que deseja fazer?\n[1]-Ir para o quarto\n[2]-Falar com pai/mãe\n[3]-Ir ao clube da luta\n[4]-Ver inventário\n[5]-Reiniciar jogo");
+
+        switch (inicio) {
+            case "1":
+                quartoOpcao();
+                break;
+            case "2":
+                alert("Você conversou com seus pais. Eles te deram conselhos sábios."); // Alterar o texto conforme necessário
+                inventario.push("amor");
+                break;
+            case "3":
+                lutarNoClube();
+                break;
+            case "4":
+                verStatus();
+                break;
+            case "5":
+                reiniciarJogo();
+                break;
+            default:
+                alert("Opção inválida, por favor, tente novamente."); // Alterar o texto conforme necessário
+                break;
+        }
+    } else if (game_state == 1) {
+        faseItalia();
+    }
+
+    // Verifica se o jogador perdeu o jogo
+    if (vida <= 0) {
+        alert("Você perdeu toda sua vida. Fim de jogo."); // Alterar o texto conforme necessário
+        continuar = false;
+    }
+}
